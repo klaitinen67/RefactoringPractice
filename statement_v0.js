@@ -82,6 +82,38 @@
 let plays = require("./plays.json")
 let invoice = require("./invoice.json")
 
+
+
+function statement(invoice, plays) {
+  let totalAmount = 0;
+  let volumeCredits = 0;
+  let result = `Statement for ${invoice.customer}\n`;
+  const format = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  }).format;
+  for (let perf of invoice.performances) {
+    let thisAmount = playToPrice(perf);
+
+    // add volume credits
+    volumeCredits = volumeCreditsFor(perf);
+
+    // print line for this order
+    result += ` ${playFor(perf).name}: ${format(playToPrice(perf) / 100)} (${perf.audience
+      } seats)\n`;
+    totalAmount += playToPrice(perf);
+  }
+  result += `Amount owed is ${format(totalAmount / 100)}\n`;
+  result += `You earned ${volumeCredits} credits\n`;
+  return result;
+}
+
+// you can either run the statement function directly from this file 
+let stmt = statement(invoice, plays)
+console.log(stmt)
+
+
 function playToPrice(perf) {
   switch (playFor(perf).type) {
     case 'tragedy':
@@ -107,41 +139,13 @@ function playFor(aPerformance) {
   return plays[aPerformance.playID];
 }
 
-function statement(invoice, plays) {
-  let totalAmount = 0;
+function volumeCreditsFor(perf) {
   let volumeCredits = 0;
-  let result = `Statement for ${invoice.customer}\n`;
-  const format = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format;
-  for (let perf of invoice.performances) {
-    let thisAmount = playToPrice(perf);
-
-    // add volume credits
-    volumeCredits += Math.max(perf.audience - 30, 0);
-
-    // add extra credit for every ten comedy attendees
-    if ('comedy' === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
-
-    // print line for this order
-    result += ` ${playFor(perf).name}: ${format(playToPrice(perf) / 100)} (${perf.audience
-      } seats)\n`;
-    totalAmount += playToPrice(perf);
-  }
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
-  result += `You earned ${volumeCredits} credits\n`;
-  return result;
+  volumeCredits += Math.max(perf.audience - 30, 0);
+  // add extra credit for every ten comedy attendees
+  if ('comedy' === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+  return volumeCredits;
 }
-
-
-// you can either run the statement function directly from this file 
-let stmt = statement(invoice, plays)
-console.log(stmt)
-
-
-
 // or export it
 // module.exports = statement
 // run it in another file
