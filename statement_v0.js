@@ -83,7 +83,7 @@ let plays = require("./plays.json")
 let invoice = require("./invoice.json")
 
 function playToPrice(play, thisAmount, perf) {
-  switch (play.type) {
+  switch (playFor(perf).type) {
     case 'tragedy':
       thisAmount = 40000;
       if (perf.audience > 30) {
@@ -117,7 +117,6 @@ function statement(invoice, plays) {
     minimumFractionDigits: 2,
   }).format;
   for (let perf of invoice.performances) {
-    const play = playFor(perf);
     let thisAmount = 0;
 
     thisAmount = playToPrice(play, thisAmount, [playFor(perf)]);
