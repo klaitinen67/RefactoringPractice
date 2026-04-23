@@ -85,10 +85,11 @@ let invoice = require("./invoice.json")
 
 
 function statement(invoice, plays) {
+
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
-  const format = formatMoney(totalAmount);
+
   for (let perf of invoice.performances) {
     let thisAmount = playToPrice(perf);
 
@@ -96,8 +97,7 @@ function statement(invoice, plays) {
     volumeCredits = volumeCreditsFor(perf);
 
     // print line for this order
-    result += ` ${playFor(perf).name}: ${formatMoney(playToPrice(perf) / 100)} (${perf.audience
-      } seats)\n`;
+    result += ` ${playFor(perf).name}: ${formatMoney(playToPrice(perf) / 100)} (${perf.audience} seats)\n`;
     totalAmount += playToPrice(perf);
   }
   result += `Amount owed is ${formatMoney(totalAmount / 100)}\n`;
