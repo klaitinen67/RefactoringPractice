@@ -82,7 +82,7 @@
 let plays = require("./plays.json")
 let invoice = require("./invoice.json")
 
-function playToPrice(perf, play) {
+function playToPrice(perf) {
   switch (playFor(perf).type) {
     case 'tragedy':
       thisAmount = 40000;
@@ -98,7 +98,7 @@ function playToPrice(perf, play) {
       thisAmount += 300 * perf.audience;
       break;
     default:
-      throw new Error(`unknown type: ${play.type}`);
+      throw new Error(`unknown type: ${playFor(perf).type}`);
   }
   return thisAmount;
 }
@@ -117,7 +117,7 @@ function statement(invoice, plays) {
     minimumFractionDigits: 2,
   }).format;
   for (let perf of invoice.performances) {
-    let thisAmount = playToPrice(perf, playFor(perf));
+    let thisAmount = playToPrice(perf);
 
     // add volume credits
     volumeCredits += Math.max(perf.audience - 30, 0);
