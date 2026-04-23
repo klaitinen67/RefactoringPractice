@@ -82,7 +82,7 @@
 let plays = require("./plays.json")
 let invoice = require("./invoice.json")
 
-function playToPrice(play, thisAmount, perf) {
+function playToPrice(perf, play) {
   switch (playFor(perf).type) {
     case 'tragedy':
       thisAmount = 40000;
@@ -117,9 +117,7 @@ function statement(invoice, plays) {
     minimumFractionDigits: 2,
   }).format;
   for (let perf of invoice.performances) {
-    let thisAmount = 0;
-
-    thisAmount = playToPrice(play, thisAmount, [playFor(perf)]);
+    let thisAmount = playToPrice(perf, playFor(perf));
 
     // add volume credits
     volumeCredits += Math.max(perf.audience - 30, 0);
