@@ -120,16 +120,16 @@ function statement(invoice, plays) {
     const play = playFor(perf);
     let thisAmount = 0;
 
-    thisAmount = playToPrice(play, thisAmount, perf);
+    thisAmount = playToPrice(play, thisAmount, [playFor(perf)]);
 
     // add volume credits
     volumeCredits += Math.max(perf.audience - 30, 0);
 
     // add extra credit for every ten comedy attendees
-    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+    if ('comedy' === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
 
     // print line for this order
-    result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience
+    result += ` ${playFor(perf).name}: ${format(thisAmount / 100)} (${perf.audience
       } seats)\n`;
     totalAmount += thisAmount;
   }
