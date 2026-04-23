@@ -126,9 +126,9 @@ function statement(invoice, plays) {
     if ('comedy' === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
 
     // print line for this order
-    result += ` ${playFor(perf).name}: ${format(thisAmount / 100)} (${perf.audience
+    result += ` ${playFor(perf).name}: ${format(playToPrice(perf) / 100)} (${perf.audience
       } seats)\n`;
-    totalAmount += thisAmount;
+    totalAmount += playToPrice(perf);
   }
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
